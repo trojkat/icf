@@ -778,6 +778,8 @@ components:
           type: boolean
           description: |
             This indicates whether the Reseller can expect an immediate confirmation of whether the Supplier has accepted the booking. If `false` then the Reseller MUST be able to delay confirmation to the customer while waiting for the Supplier to accept or reject the Booking.
+            
+            When `instantConfirmation` is set to `false` one should expect created reservations to first get into a `PENDING` state.
           example: true
         instantDelivery:
           type: boolean
@@ -913,6 +915,8 @@ components:
             * New Reservation -> `ON_HOLD` -> `CONFIRMED`
             * New Reservation -> `ON_HOLD` -> `PENDING` -> `REJECTED`
             * New Reservation -> `ON_HOLD` -> `PENDING` -> `CONFIRMED`
+            
+            The `PENDING` status MAY appear only for products with the `instantConfirmation` property set to `false`. Poll the /bookings endpoint for status changes.
             
             Following are the only valid Cancellation flow status transitions:
             
