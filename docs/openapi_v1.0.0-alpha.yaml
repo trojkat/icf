@@ -75,6 +75,33 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   
+  /calendar:
+    get:
+      tags:
+        - Availability
+      summary: Get a list of dates on which tickets are available
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalendarItem'
+      operationId: getCalendar
+      parameters:
+        - $ref: '#/components/parameters/LocalDateStart'
+        - $ref: '#/components/parameters/LocalDateEnd'
+        - $ref: '#/components/parameters/ProductId'
+        - $ref: '#/components/parameters/SupplierId'
+        - $ref: '#/components/parameters/OptionIds'
+      description: |-
+        Returns a list of dates on which tickets are available.
+        Only dates that have availability SHALL BE returned.
+        A minimum range of 31 days MUST BE supported.
+
+        This endpoint proved a relatively lightweight way to show a calendar in a user interface containing a one month calendar with the days where there is no availability greyed out.
   /availability:
     get:
       tags:
@@ -369,7 +396,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
 components:
   schemas:
     Availability:
@@ -1084,6 +1110,15 @@ components:
       description: |
         This UUID is generated for the initial `createReservation` request and MUST never change. This value MUST be tracked by both the Reseller and Booking Platform for locating this record.
       example: '7df49d62-57ad-44be-8373-e4c2fe7e63fe'
+    CalendarItem:
+      title: CalendarItem
+      type: object
+      properties:
+        localDate:
+          type: string
+        capacity:
+          type: integer
+          minimum: 0
   responses:
     BadRequest:
       description: |
@@ -1162,6 +1197,17 @@ components:
       schema:
         type: string
         format: uuid
+    OptionIds:
+      name: optionIds
+      in: query
+      description: |
+        A list of valid option IDs that matches `id`s returned from `GET /products`. TODO: IS THIS REALLY CORRECT??
+      schema:
+        type: array
+        items:
+          type: string
+          format: string
+      required: false
   requestBodies:
     AvailabilityCheckRequest:
       required: true
