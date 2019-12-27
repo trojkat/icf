@@ -1120,6 +1120,7 @@ components:
       properties:
         localDate:
           type: string
+          format: date
         capacity:
           type: integer
           minimum: 0
